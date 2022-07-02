@@ -20,13 +20,14 @@ loc_button.js_on_event("button_click", CustomJS(code="""
         }
     )
     """))
-user_location = streamlit_bokeh_events(
-    loc_button,
-    events="GET_LOCATION",
-    key="get_location",
-    refresh_on_update=False,
-    override_height=75,
-    debounce_time=0)
+with st.expander("Grant your location"):
+    user_location = streamlit_bokeh_events(
+        loc_button,
+        events="GET_LOCATION",
+        key="get_location",
+        refresh_on_update=False,
+        override_height=75,
+        debounce_time=0)
 
 if user_location:
     if "GET_LOCATION" in user_location:
@@ -84,8 +85,8 @@ lon_lat = df_map[['lon', 'lat']].values.tolist()
 print("Route to closest bike: ", route_to_closest_bike(my_location, lon_lat))
 print("My location: ", my_location)
 
-route_to_bike = get_route('cycling', my_location, route_to_closest_bike(my_location, lon_lat))
-route_from_bike_to_dest = get_route('cycling', route_to_closest_bike(my_location, lon_lat), destination)
+route_to_bike, duration_to_bike, distance_to_bike = get_route('cycling', my_location, route_to_closest_bike(my_location, lon_lat))
+route_from_bike_to_dest, duration_from_bike, distance_from_bike = get_route('cycling', route_to_closest_bike(my_location, lon_lat), destination)
 route_to_bike_layer = pdk.Layer(
     type="PathLayer",
     data= route_to_bike,
@@ -119,4 +120,27 @@ init_view_state = pdk.ViewState(latitude=48.717299, longitude=21.254107, zoom=12
 r = pdk.Deck(layers = [bikes_layer, route_to_bike_layer, route_from_bike_to_dest_layer], initial_view_state=init_view_state, map_style='mapbox://styles/mapbox/light-v10')
 st.pydeck_chart(r)
 
+if distance_to_bike < 1000:
+    st.markdown(f'### Distance to closest bike: <span style="background-color: #0066ff">{round(distance_to_bike)}</span> m', unsafe_allow_html=True)
+else:
+    st.markdown(f'### Distance to closest bike: <span style="background-color: #0066ff">{round(distance_to_bike/1000)}</span> km', unsafe_allow_html=True)
+
+if distance_from_bike < 1000:
+    st.markdown(f'### Total distance to the destination: <span style="background-color: #0066ff">{round((distance_from_bike + distance_to_bike))}</span> km', unsafe_allow_html=True)
+else:
+    st.markdown(f'### Total distance to the destination: <span style="background-color: #0066ff">{round((distance_from_bike + distance_to_bike) / 1000)}</span> km', unsafe_allow_html=True)
+
+if (duration_from_bike + duration_to_bike) < 3600:
+    st.markdown(f'### Total duration to the destination: <span style="background-color: #0066ff">{round((duration_from_bike + duration_to_bike)/60)}</span> minutes', unsafe_allow_html=True)
+else:
+    st.markdown(f'### Total duration to the destination: <span style="background-color: #0066ff">{round((duration_from_bike + duration_to_bike)/3600)}</span> hours', unsafe_allow_html=True)
+
+if selected_item == 'bicycle':
+    st.markdown(f'### Approximate cost: <span style="background-color: #0066ff">{round((duration_from_bike/3600) * 1, 2)} €</span>', unsafe_allow_html=True)
+elif selected_item == 'e-bicycle':
+    st.markdown(f'### Approximate cost: <span style="background-color: #0066ff">{round((duration_from_bike/60) * 0.1, 2)} €</span>', unsafe_allow_html=True)
+elif selected_item == 'scooter':
+    st.markdown(f'### Approximate cost: <span style="background-color: #0066ff">{round((duration_from_bike/60) * 0.1, 2)} €</span>', unsafe_allow_html=True)
+elif selected_item == 'moped':
+    st.markdown(f'### Approximate cost: <span style="background-color: #0066ff">{round((duration_from_bike/60) * 0.15, 2)} €</span>', unsafe_allow_html=True)
 

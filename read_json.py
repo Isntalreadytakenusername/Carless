@@ -1,18 +1,16 @@
 '''
 json has a following structure:
-{"routes":[{"geometry":{"coordinates":[[21.241811,48.732736],[21.241711,48.732702],[21.242864,48.731262],[21.244459,48.73042],[21.245141,48.729731],[21.247171,48.727147],[21.247226,48.726778],[21.249543,48.726391],[21.249784,48.726185],[21.248888,48.722458],[21.249337,48.720926],[21.251147,48.716641],[21.250982,48.71665]],"type":"LineString"},"legs":[{"summary":"","weight":624.9,"duration":613.8,"steps":[],"distance":2105.2}],"weight_name":"cyclability","weight":624.9,"duration":613.8,"distance":2105.2}],"waypoints":[{"distance":0.7619230035968971,"name":"Hroncova","location":[21.241811,48.732736]},{"distance":2.558757519344067,"name":"Štúrova","location":[21.250982,48.71665]}],"code":"Ok","uuid":"ciTPmx7kfKrNQJ3H7ERwuO0unBWJIw5MFNOvzhz1dzgz6xR4rqGCpg=="}
-Get coordinates to a dataframe
+{"routes":[{"geometry":{"coordinates":[[21.243125,48.730963],[21.242998,48.731155],[21.244662,48.730244],[21.247102,48.727243],[21.247254,48.72676],[21.248489,48.726613],[21.251085,48.725974],[21.253288,48.716762],[21.253535,48.716377],[21.256345,48.71611],[21.260967,48.716484],[21.263084,48.717157],[21.262926,48.717359],[21.263619,48.717603]],"type":"LineString"},"legs":[{"summary":"","weight":1033.6,"duration":877.1,"steps":[],"distance":2811.4}],"weight_name":"cyclability","weight":1033.6,"duration":877.1,"distance":2811.4}],"waypoints":[{"distance":1.1705536350145918,"name":"","location":[21.243125,48.730963]},{"distance":29.60905335663898,"name":"","location":[21.263619,48.717603]}],"code":"Ok","uuid":"hgK_qGetwPzAEn9aVUA3HxshsfJ1raqa7ir490ajMeqSl-f_7f207w=="}
+Get duration and distance from json as floats
 
 '''
 import json
 import pandas as pd
 import requests
 
-json_data = "https://api.mapbox.com/directions/v5/mapbox/cycling/21.241816,48.732730;21.250981,48.716627?geometries=geojson&access_token=pk.eyJ1IjoidmxhZHlzbGF2LXJvbWFub3YiLCJhIjoiY2w0dHlsb202MHYzZDNqbnV4dTd0Y21kaCJ9.PonOJfTH4SiS18--xjZclA"
+json_data = "https://api.mapbox.com/directions/v5/mapbox/cycling/21.279109,48.743239;21.278919,48.745906?geometries=geojson&access_token=pk.eyJ1IjoidmxhZHlzbGF2LXJvbWFub3YiLCJhIjoiY2w0dHlsb202MHYzZDNqbnV4dTd0Y21kaCJ9.PonOJfTH4SiS18--xjZclA"
 response = requests.get(json_data)
 json_response = response.json()
-json_response = json_response['routes'][0]['geometry']['coordinates']
-df = pd.DataFrame(json_response)
-df.columns = ['lon', 'lat']
-df.dropna(inplace=True)
-df.head()
+duration = json_response['routes'][0]['duration']
+distance = json_response['routes'][0]['distance']
+print("Duration and distance", duration, distance)
