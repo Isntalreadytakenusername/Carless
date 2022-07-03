@@ -38,10 +38,10 @@ if user_location:
         my_location = str(my_location_dict['lon']) + ',' + str(my_location_dict['lat'])
     else:
         st.write("Sorry, we didn't get your location")
-        my_location = '21.279109,48.743239'   # (lon, lat) is used by mapbox API
+        my_location = '21.239033,48.735741'   # (lon, lat) is used by mapbox API
 else:
     st.write("Sorry, we didn't get your location")
-    my_location = '21.279109,48.743239'  # (lon, lat) is used by mapbox API
+    my_location = '21.239033,48.735741'  # (lon, lat) is used by mapbox API
 
 # temporary location 48.743239, 21.279109 actual my_location = '21.242385,48.732033'
 url = 'https://gbfs.sharing.antik.sk/v2/antiksharing_ke/en/free_bike_status.json'
@@ -125,8 +125,8 @@ if distance_to_bike < 1000:
 else:
     st.markdown(f'### Distance to closest bike: <span style="background-color: #0066ff">{round(distance_to_bike/1000)}</span> km', unsafe_allow_html=True)
 
-if distance_from_bike < 1000:
-    st.markdown(f'### Total distance to the destination: <span style="background-color: #0066ff">{round((distance_from_bike + distance_to_bike))}</span> km', unsafe_allow_html=True)
+if (distance_from_bike + distance_to_bike) < 1000:
+    st.markdown(f'### Total distance to the destination: <span style="background-color: #0066ff">{round((distance_from_bike + distance_to_bike))}</span> m', unsafe_allow_html=True)
 else:
     st.markdown(f'### Total distance to the destination: <span style="background-color: #0066ff">{round((distance_from_bike + distance_to_bike) / 1000)}</span> km', unsafe_allow_html=True)
 
