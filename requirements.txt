@@ -2,3 +2,4 @@ pandas
 bokeh
 streamlit
 streamlit_bokeh_events
+haversine
